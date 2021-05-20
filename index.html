@@ -5,12 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&display=swap"
+      rel="stylesheet"
+    />
+
     <title>Library</title>
   </head>
   <body>
+    <h1 class="page-title">LIBRARY</h1>
     <button class="new-book-btn">New Book</button>
     <div class="form-popup">
-      <form action="" class="form-container" onsubmit="return false">
+      <form class="form-container" id="form">
         <h1>Add New Book</h1>
         <input type="text" name="title" id="title-input" placeholder="Title" />
         <input
@@ -25,9 +31,11 @@
           id="pages-input"
           placeholder="Pages"
         />
-        <label for="isRead">Has Read?</label>
-        <input type="checkbox" name="isRead" id="status-input" />
-        <button class="add-btn">Add Book</button>
+        <div>
+          <label for="isRead">Has Read?</label>
+          <input type="checkbox" name="isRead" id="status-input" />
+        </div>
+        <input type="submit" value="Submit" />
         <button class="close-btn" onclick="closeForm()">
           Close
         </button>
