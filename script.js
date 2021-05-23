@@ -3,13 +3,13 @@ let myLibrary = [
   // { title: "Book2", author: "Dao", pages: 264, isRead: false },
 ];
 
-let bookDivs = [];
+let localStorage = window["localStorage"];
 
-function Book(title, author, pages, isRead) {
+function Book(title, author, pages, status) {
   this.title = title;
   this.author = author;
   this.pages = pages;
-  this.isRead = isRead;
+  this.status = status;
 }
 
 function addBookToLibrary(event) {
@@ -31,24 +31,48 @@ function addBookToLibrary(event) {
   const book = new Book(title, author, pages, status);
   myLibrary.push(book);
 
+  saveLocal();
+  displayLibrary();
+  form.reset();
+  closeForm();
+}
+
+const bookContainer = document.querySelector(".book-container");
+const newBookButton = document.querySelector(".new-book-btn");
+const formDiv = document.querySelector(".form-popup");
+newBookButton.addEventListener("click", openForm);
+
+const form = document.getElementById("form");
+form.addEventListener("submit", addBookToLibrary);
+
+function displayLibrary() {
+  bookContainer.innerHTML = "";
+  let bookDivs = myLibrary.map((book) => createBookDiv(book));
+
+  bookDivs.forEach((div) => {
+    bookContainer.appendChild(div);
+  });
+}
+
+function createBookDiv(book) {
   const bookDiv = document.createElement("div");
   bookDiv.classList.add("book-div");
 
   const titleSpan = document.createElement("h1");
-  titleSpan.textContent = title;
+  titleSpan.textContent = book.title;
   bookDiv.appendChild(titleSpan);
 
   const authorSpan = document.createElement("h3");
-  authorSpan.textContent = `By ${author}`;
+  authorSpan.textContent = `By ${book.author}`;
   bookDiv.appendChild(authorSpan);
 
   const pagesSpan = document.createElement("h3");
-  pagesSpan.textContent = `${pages} pages`;
+  pagesSpan.textContent = `${book.pages} pages`;
   bookDiv.appendChild(pagesSpan);
 
   const statusBox = document.createElement("input");
   statusBox.setAttribute("type", "checkbox");
-  if (status) statusBox.setAttribute("checked", status);
+  if (book.status) statusBox.setAttribute("checked", book.status);
   statusBox.setAttribute("id", "status-box");
   statusBox.addEventListener("change", () => {
     book.status = statusBox.checked;
@@ -67,31 +91,10 @@ function addBookToLibrary(event) {
   deleteButton.addEventListener("click", () => {
     let index = myLibrary.indexOf(book);
     myLibrary = myLibrary.filter((item) => item != book);
-    bookDivs.splice(index, 1);
     displayLibrary();
   });
   bookDiv.appendChild(deleteButton);
-
-  bookDivs.push(bookDiv);
-
-  displayLibrary();
-  form.reset();
-  closeForm();
-}
-
-const bookContainer = document.querySelector(".book-container");
-const newBookButton = document.querySelector(".new-book-btn");
-const formDiv = document.querySelector(".form-popup");
-newBookButton.addEventListener("click", openForm);
-
-const form = document.getElementById("form");
-form.addEventListener("submit", addBookToLibrary);
-
-function displayLibrary() {
-  bookContainer.innerHTML = "";
-  bookDivs.forEach((div) => {
-    bookContainer.appendChild(div);
-  });
+  return bookDiv;
 }
 
 function openForm() {
@@ -101,3 +104,15 @@ function openForm() {
 function closeForm() {
   formDiv.style.display = "none";
 }
+
+function saveLocal() {
+  localStorage.setItem("myLibrary", JSON.stringify(myLibrary));
+}
+
+function restoreLocal() {
+  myLibrary = JSON.parse(localStorage.getItem("myLibrary"));
+  if (myLibrary === null) myLibrary = [];
+  displayLibrary();
+}
+
+restoreLocal();
